@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax com JS Puro</title>
+    <link rel="stylesheet" href="/asserts/style.css">
+</head>
+<body>
+    <form class="o-form" autocomplete="off">      
+        
+        <div class="o-form__body o-form__body--padding">
+            <div class="l-row">
+                <div class="u-grid--2">
+                    <div class="o-form__group">
+                        <h1>Busca CEP com requisição JAX</h1>
+                        <label for="" class="o-form__text">CEP:</label>
+                        <input class="o-form__data" name="cep" type="text" onchange="buscaCep()" onfocus="limpaCampos()" placeholder="11111-111">                  
+                    </div>
+                </div>
+                <br>
+                <div class="u-grid--8">
+                    <label for="" class="o-form__text">Endereço:</label>
+                    <input class="o-form__data" name="endereco" type="text">
+                </div>
+                <br>
+                <div class="u-grid--2">
+                    <label for="" class="o-form__text">Numero:</label>
+                    <input class="o-form__data" name="numero" type="text">
+                </div>
+                <br>
+            </div>
+            <div class="l-row">
+                <div class="u-grid--8">
+                    <label for="" class="o-form__text">Bairro:</label>
+                    <input class="o-form__data" name="bairro" type="text">
+                </div>
+                <br>
+                <div class="u-grid--4">
+                    <label for="" class="o-form__text">Complemento:</label>
+                    <input class="o-form__data" name="complemento" type="text">
+                </div>
+                <br>
+            </div>
+            <div class="l-row">
+                <div class="u-grid--10">
+                    <label for="" class="o-form__text">Cidade:</label>
+                    <input class="o-form__data" name="cidade" type="text">
+                </div>
+                <br>
+                <div class="u-grid--2">
+                    <label for="" class="o-form__text">Estado:</label>
+                    <input class="o-form__data" name="estado" type="text">
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+<script>
+        function buscaCep() {
+            let inputCep = document.querySelector('input\[name=cep\]');
+            let cep = inputCep.value.replace('-', '');
+            let url = 'http://viacep.com.br/ws/' + cep + '/json';
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status = 200) {
+                        preencheCampos(JSON.parse(xhr.responseText))    ;
+                    }
+                }
+            }
+            xhr.send();
+        }
+
+        function preencheCampos(json) { 
+            let cep = document.querySelector('input[name=cep]')
+            let endereco = document.querySelector('input[name=endereco]')
+            let bairro = document.querySelector('input[name=bairro]') /*.value = json.bairro;*/
+            let complemento =document.querySelector('input[name=complemento]') /*.value = json.complemento;*/
+            let cidade = document.querySelector('input[name=cidade]') /*.value = json.localidade; */
+            let estado = document.querySelector('input[name=estado]') /*.value = json.uf; */
+            
+            if(json.logradouro === undefined || json.bairro === undefined || json.localidade === undefined || json.uf === undefined) {
+                endereco.value = 'CEP NÃO EXISTENTE'
+                bairro.value = 'CEP NÃO EXISTENTE'
+                cidade.value = 'CEP NÃO EXISTENTE'
+                estado.value = 'CEP NÃO EXISTENTE'
+            }else {
+                endereco.value = json.logradouro;
+                bairro.value = json.bairro;
+                cidade.value = json.localidade;
+                estado.value = json.uf;
+            }
+            
+        }
+
+
+
+    
+</script>
+</html>
